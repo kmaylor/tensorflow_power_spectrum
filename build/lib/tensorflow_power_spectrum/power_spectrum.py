@@ -1,6 +1,3 @@
-import tensorflow as tf
-import numpy as np
-
 class PowerSpectrum(object):
     """ Class for calculating a the power spectrum (1D or 2D) of an image in tensorflow.
         Expects square image as input.
@@ -9,10 +6,8 @@ class PowerSpectrum(object):
         """image_size: only needed
         """
         self.image_size = image_size
-        if self.image_size is not None:
-            self.az_mask=self.build_azimuthal_mask()
-        if build_model_on_init:
-            self.build_model()
+        if image_size is not None:
+            self.az_mask=build_azimuthal_mask()
 
     def power2D(self,x):
         x = tf.spectral.fft2d(tf.cast(x,dtype=tf.complex64))
@@ -45,6 +40,17 @@ class PowerSpectrum(object):
         az_avg = self.az_average(x)
         ell=np.arange(int(az_avg.shape[1]))*9
         return tf.multiply(az_avg,tf.reshape(tf.cast(ell*(ell+1)/2/np.pi,dtype=tf.float32),(1,-1)))
+
+    def build_model(self):
+        input_img = Input(shape=(self.image_size,self.image_size))
+        if image_size is not None:
+            p=Lambda(lambda x: power1D(x))(input_img) 
+        else:
+            p=Lambda(lambda x: power2D(x))(input_img)
+        self.model=Model(inputs=input_img,outputs=p)
+
+    def __call__(self,image):
+        return self.model.predict(image)
 
 
 
