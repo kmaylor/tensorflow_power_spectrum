@@ -7,7 +7,7 @@ assert sys.version_info >= (3,3), "tensorflow_power_spectrum requires Python ver
 setup(
     name='tensorflow_power_spectrum',
     version='0.1',
-    packages=['power_spectrum'],
+    packages=['tensorflow_power_spectrum'],
     description='Power spectrum calculation in tensorflow',
     long_description=open('README.md').read(),
     install_requires=[
