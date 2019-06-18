@@ -6,12 +6,14 @@ class PowerSpectrum(object):
         Expects square image as input.
     """
     def __init__(self,image_size=None):
-        """image_size: only needed for power1D
+        """image_size: only needed
         """
         self.image_size = image_size
         if self.image_size is not None:
             self.az_mask=self.build_azimuthal_mask()
-        
+        if build_model_on_init:
+            self.build_model()
+
     def power2D(self,x):
         x = tf.spectral.fft2d(tf.cast(x,dtype=tf.complex64))
         x = tf.cast(x,dtype=tf.complex64)
